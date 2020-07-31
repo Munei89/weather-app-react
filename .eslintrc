@@ -1,0 +1,35 @@
+{
+  "parser": "babel-eslint",
+  "plugins": [
+    "react",
+    "json"
+  ],
+  "env": {
+    "browser": true,
+    "node": true,
+    "jest": true
+  },
+  "extends": [
+    "essentials",
+    "react"
+  ],
+  "rules": {
+    "react/jsx-uses-react": "error",
+    "react/jsx-uses-vars":"error",
+    "react/jsx-filename-extension": [1,
+      { "extensions": [".js", ".jsx"] }],
+    "jsx-quotes": 0,
+    "quotes": ["error", "single"],
+    "semi": "off",
+    "indent": ["error", "tab"],
+    "no-console": 1,
+    "comma-dangle": 0,
+    "space-before-function-paren": 0,
+    "jsx-curly-spacing": 0,
+    "import/prefer-default-export": 0,
+    "import/no-named-as-default": 0,
+    "no-magic-numbers": "warn",
+    "no-nested-ternary": "warn",
+    "camelcase": "warn"
+  }
+}
