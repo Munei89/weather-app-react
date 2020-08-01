@@ -18,7 +18,6 @@ const App = () => {
 				<div className="grid-container">
 					<Toggle theme={theme} toggleTheme={themeToggler} />
 					<Home />
-					<p>weather</p>
 					<div className="grid-row">
 						<div className="col" />
 						<div className="col" />
