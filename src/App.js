@@ -4,7 +4,7 @@ import { GlobalStyles } from './components/globalStyles';
 import { lightTheme, darkTheme } from './components/Themes'
 import { useDarkMode } from './components/customHooks'
 import Toggle from './components/Toggle'
-import './App.css';
+import './styles.scss';
 
 const App = () => {
 	const [theme, themeToggler, mountedComponent] = useDarkMode();
