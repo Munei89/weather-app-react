@@ -20,6 +20,7 @@
     "eslint-plugin-json": "^2.0.1",
     "eslint-plugin-jsx-a11y": "^6.2.3",
     "eslint-plugin-react": "^7.17.0",
+    "husky": "4.2.5",
     "node-sass": "4.14.1",
     "prettier": "^2.0.5"
   },
@@ -31,6 +32,13 @@
   },
   "eslintConfig": {
     "extends": "react-app"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm test",
+      "pre-push": "npm test",
+      "...": "..."
+    }
   },
   "browserslist": {
     "production": [

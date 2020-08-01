@@ -1,5 +1,5 @@
 import React from 'react'
-import { func, string } from 'prop-types';
+import { PropTypes } from 'prop-types';
 import styled from 'styled-components'
 const Button = styled.button`
   background: ${({ theme }) => theme.background};
@@ -18,8 +18,12 @@ const Toggle = ({ theme, toggleTheme }) => {
 		</Button>
 	);
 };
+Toggle.defaultPropTypes = {
+	theme: 'light',
+	toggleTheme: () => {}
+}
 Toggle.propTypes = {
-	theme: string.isRequired,
-	toggleTheme: func.isRequired,
+	theme: PropTypes.string,
+	toggleTheme: PropTypes.func,
 }
 export default Toggle;

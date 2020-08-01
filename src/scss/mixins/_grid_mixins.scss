@@ -1,0 +1,22 @@
+$global-gutter: 20px;
+
+@mixin cell($cells, $gutter: $global-gutter, $span: 1) {
+  flex: 0 0 0px;
+  // IE11 fix
+  flex-basis: calc(#{$span / $cells * 100%} - #{$gutter});
+}
+
+@mixin row() {
+  display: flex;
+  justify-content: space-around;
+  flex-direction: row;
+}
+
+@mixin nested-row($gutter: $global-gutter) {
+  display: flex;
+  justify-content: space-around;
+  flex-direction: row;
+  width: 100%;
+  margin: 0 (-$gutter / 2);
+}
+

@@ -12,12 +12,18 @@ const App = () => {
 	if (!mountedComponent) return <div/>
 	return (
 		<ThemeProvider theme={themeMode}>
-			<>
+			<div className="grid-wrapper">
 				<GlobalStyles/>
-				<div className="App">
+				<div className="grid-container">
 					<Toggle theme={theme} toggleTheme={themeToggler} />
+					<p>weather</p>
+					<div className="grid-row">
+						<div className="col" />
+						<div className="col" />
+						<div className="col" />
+					</div>
 				</div>
-			</>
+			</div>
 		</ThemeProvider>
 	);
 }
