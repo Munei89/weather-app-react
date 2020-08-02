@@ -2,8 +2,8 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 ## Add This to Root Project
 
-`REACT_APP_API_URL = 'https://api.openweathermap.org/data/2.5'`
-`REACT_APP_API_KEY = 'API_ID'`
+`REACT_APP_API_URL = 'https://api.openweathermap.org/data/2.5'`<br />
+`REACT_APP_API_KEY = 'API_ID'`<br />
 `REACT_APP_ICON_URL = 'https://openweathermap.org/img/wn'`
 
 
