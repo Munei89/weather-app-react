@@ -1,0 +1,31 @@
+@import '../../scss/variables';
+
+.list-group {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+
+
+  .list-group-item {
+    text-align: center;
+  }
+  .condition-icons {
+    .img {
+      //width:15px;
+    }
+  }
+  .des {
+    &--sm {
+      font-size: map_get($font-sizes, 'sm');
+    }
+    &--md {
+      font-size: map_get($font-sizes, 'md');
+    }
+    &--lg {
+      font-size: map_get($font-sizes, 'lg');
+    }
+    &--xl {
+      font-size: map_get($font-sizes, 'xl');
+    }
+  }
+}
