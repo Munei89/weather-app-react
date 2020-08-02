@@ -30,6 +30,7 @@ const App = () => {
 	const [dayTheme, setDayTheme] = useState(false)
 	const dispatch = useDispatch()
 	const [conditionDegrees, setConditionDegree] = useState(false)
+	const [refresWeather, setRefreshWeather] = useState(1)
 	const [mountedComponent] = useDarkMode();
 	const themeMode = dayTheme ? lightTheme : darkTheme;
 	const hours = new Date().getHours()
@@ -64,17 +65,8 @@ const App = () => {
 				console.log(e)
 			})
 	}
-	async function mainBackoff() {
-		try {
-			const response = await backOff(() => fetchApi(),
-				{ delayFirstAttempt: true, numOfAttempts: 11 - incAttemp, timeMultiple: 3
-				});
-			dispatch({ type: 'GET_WEATHER', payload: response });
-		} catch (e) {
-			 mainBackoff();
-			console.log('api connection error');
-		}
-	}
+
+
 	let dateArray = [];
 	let hourlyArray = [];
 	let tempArrayCelcius = [];
@@ -132,17 +124,31 @@ const App = () => {
 		});
 	}
 	useEffect(() => {
+		async function mainBackoff() {
+			try {
+				const response = await backOff(() => fetchApi(),
+					{ delayFirstAttempt: true, numOfAttempts: 11 - incAttemp, timeMultiple: 3
+					});
+				dispatch({ type: 'GET_WEATHER', payload: response });
+			} catch (e) {
+				await mainBackoff();
+				console.log('api connection error');
+			}
+		}
+		mainBackoff()
+		// eslint-disable-next-line
+	}, [incAttemp, dispatch,refresWeather]);
+	useEffect(() => {
 		setDayTheme(isDayTime)
 		const interval = setInterval(() => {
-			mainBackoff().then(r => r);
+			setRefreshWeather(refresWeather + 1)
 		}, twentyMins); //1200000
 		return () => clearInterval(interval);
-	}, [isDayTime])
+	}, [isDayTime, refresWeather])
 
 	if (!mountedComponent) return <div/>
 	const retry = () => {
 		dispatch({ type: 'INC_ATTEMPT', payload: 1 });
-		mainBackoff();
 	}
 	return (
 		<ThemeProvider
