@@ -13,13 +13,14 @@ const Temperatures = ({
 	 celcius,
 	 hourly,
 	 size,
+	isDay,
 	 className }) => {
 	const classProps = cx(styles, {
 		[styles[`des--${size}`]]: true, [className]: className !== null
 	})
 	return (
 		<>
-			<div className={styles['list-group']}>
+			<div className={`${styles['list-group']} card ${!isDay ? 'card--darkMode' : ''}`}>
 				{tempData.map((value, index) => {
 					return (
 					    <div key={index} className={styles['list-group-item']}>
@@ -29,9 +30,9 @@ const Temperatures = ({
 							</div>
 							<div className={styles['condition-values']}>
 								<div>
-									<div className={styles['days']}>{value}{' '}{hourly[index]}</div>
+									<div className={classProps}>{value}{' '}{hourly[index]}</div>
 
-									<div className={classProps}>{celcius ? tempCel[index] : tempFar[index]}°</div>
+									<div className={classProps}>{!celcius ? tempCel[index] : tempFar[index]}°</div>
 								</div>
 							</div>
 						</div>)

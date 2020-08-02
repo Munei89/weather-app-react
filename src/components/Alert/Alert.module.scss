@@ -1,0 +1,21 @@
+@import '../../scss/variables';
+
+.alert {
+  position: absolute;
+  border-radius: 5px;
+  box-sizing: border-box;
+  color: white;
+  font-size: 11px;
+  margin-bottom: 1em;
+  padding: 1em;
+  width: 100%;
+  bottom: -10px;
+  left: 0;
+  text-align: center;
+
+  &-warning {
+    background: $warning;
+  }
+
+
+}
