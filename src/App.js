@@ -13,21 +13,27 @@ import Header from './components/Header';
 import DayImg from '../src/assets/images/day.png'
 import NightImg from '../src/assets/images/night.png'
 import Alert from './components/Alert';
-import styles from './App.module.scss'
 
 const LON = '18.4232';
-const LAT = '-33.9258'
+const LAT = '-33.9258';
+
+
+const twentyMins = 1200000;
+const over15 = 15;
+const over25 = 25;
+const zero = 0;
 
 const App = () => {
 	const getWeather = useSelector(state => state.getWeather);
 	const incAttemp = useSelector(state => state.getWeather);
-	const [backoffsecond, setBackoffsecond] = useState(0);
+	const [backoffsecond, setBackoffsecond] = useState(zero);
 	const [dayTheme, setDayTheme] = useState(false)
 	const dispatch = useDispatch()
-	const [error, setError] = useState();
 	const [conditionDegrees, setConditionDegree] = useState(false)
 	const [mountedComponent] = useDarkMode();
 	const themeMode = dayTheme ? lightTheme : darkTheme;
+	const hours = new Date().getHours()
+	const isDayTime = hours > 6 && hours < 20
 	const bgStyle = {
 		backgroundImage: `url(${dayTheme ? DayImg : NightImg})`,
 		backgroundSize: 'cover',
@@ -36,19 +42,18 @@ const App = () => {
 	};
 	async function fetchApi() {
 		setBackoffsecond(new Date().getSeconds());
-		return fetch(`${process.env.REACT_APP_API_URL}/onecall?&lat=${LAT}&lon=${LON}&include=hourly,daily&appid=${process.env.REACT_APP_API_KEY}`)
-			.then(response => {
+		try {
+			return fetch(
+				`${process.env.REACT_APP_API_URL}
+				/onecall?&lat=${LAT}
+				&lon=${LON}
+				&include=hourly,daily&appid
+				=${process.env.REACT_APP_API_KEY}`
+			).then(response => {
 				return response.json()
 			})
-		try {
-			const
-				response = await backOff(() => fetchApi(),
-					{ delayFirstAttempt: true, numOfAttempts: 11 - incAttemp, timeMultiple: 3
-					});
-			dispatch({ type: 'GET_WEATHER', payload: response });
 		} catch (e) {
-			mainBackoff();
-			setError(true)
+			console.log('api connection error');
 		}
 	}
 	async function mainBackoff() {
@@ -56,11 +61,10 @@ const App = () => {
 			const response = await backOff(() => fetchApi(),
 				{ delayFirstAttempt: true, numOfAttempts: 11 - incAttemp, timeMultiple: 3
 				});
-			console.log('api connection success===', response);
 			dispatch({ type: 'GET_WEATHER', payload: response });
 		} catch (e) {
 			await mainBackoff();
-			console.log('api connection error===');
+			console.log('api connection error');
 		}
 	}
 
@@ -84,16 +88,18 @@ const App = () => {
 		currentDate = currentDateObject.toLocaleString('en-ZA', options);
 		currentTempCelci = getWeather.weatherData.current.temp - 273.15;
 		currentTempFa = currentTempCelci * (9 / 5) + 32;
-		currentTempCelci = currentTempCelci.toFixed(0);
-		currentTempFa = currentTempFa.toFixed(0);
+		currentTempCelci = currentTempCelci.toFixed(zero);
+		currentTempFa = currentTempFa.toFixed(zero);
 
-		currentWeatherIcon = `${process.env.REACT_APP_ICON_URL}/${getWeather.weatherData.current.weather[0].icon}@2x.png`;
-		currentWeatherDescription = getWeather.weatherData.current.weather[0].main;
+		currentWeatherIcon = `${process.env.REACT_APP_ICON_URL}/
+								${getWeather.weatherData.current.weather[zero].icon}
+								@2x.png`;
+		currentWeatherDescription = getWeather.weatherData.current.weather[zero].main;
 
-		let daily_temp = getWeather.weatherData.daily;
+		let dailyTemp = getWeather.weatherData.daily;
 		let k = 0;
-		daily_temp.forEach(element => {
-			if (k === 0) {
+		dailyTemp.forEach(element => {
+			if (k === zero) {
 				k = k + 1;
 				return;
 			}
@@ -103,15 +109,15 @@ const App = () => {
 			dateObject.toLocaleString('en-ZA', { hour: 'numeric' }) // 10 AM
 			dateObject.toLocaleString('en-ZA', { minute: 'numeric' }) // 30
 
-			let temp_kelvin = element.temp.day;
-			let temp_celcius = temp_kelvin - 273.15;
-			let temp_fa = temp_celcius * (9 / 5) + 32;
+			let tempKelvin = element.temp.day;
+			let tempCelcius = tempKelvin - 273.15;
+			let tempFa = tempCelcius * (9 / 5) + 32;
 
-			dailyIconArray.push(`${process.env.REACT_APP_ICON_URL}/${element.weather[0].icon}@2x.png`);
-			dailyIconDes.push(element.weather[0].main);
+			dailyIconArray.push(`${process.env.REACT_APP_ICON_URL}/${element.weather[zero].icon}@2x.png`);
+			dailyIconDes.push(element.weather[zero].main);
 
-			tempArrayCelcius.push(temp_celcius.toFixed(0));
-			tempArrayFare.push(temp_fa.toFixed(0));
+			tempArrayCelcius.push(tempCelcius.toFixed(zero));
+			tempArrayFare.push(tempFa.toFixed(zero));
 			dateArray.push(weekday.substring(0, 3));
 			hourlyArray.push(dateObject.toLocaleString('en-ZA', { hour: 'numeric' }) +
 				':'				+
@@ -121,22 +127,18 @@ const App = () => {
 		});
 	}
 	useEffect(() => {
-		mainBackoff();
-		const hours = new Date().getHours()
-		const isDayTime = hours > 6 && hours < 20
+		mainBackoff().then(r => r);
 		setDayTheme(isDayTime)
-		console.log(process.env)
-		const interval = setInterval(() => { // the app will be updated periodically for every 20 minutes
-			mainBackoff();
-			console.log('This will run every 20 mintues!');
-		}, 1200000); //1200000
+		const interval = setInterval(() => {
+			mainBackoff().then(r => r);
+		}, twentyMins); //1200000
 		return () => clearInterval(interval);
 	}, [dayTheme])
 	if (!mountedComponent) return <div/>
 
 	const retry = () => {
 		dispatch({ type: 'INC_ATTEMPT', payload: 1 });
-		mainBackoff()
+		mainBackoff().then(r => r);
 	}
 	return (
 		<ThemeProvider
@@ -144,12 +146,16 @@ const App = () => {
 			<div className="grid-wrapper" style={bgStyle}>
 				<GlobalStyles/>
 				<div className="grid-container">
-					{(getWeather.status && !error) ?
+					{(getWeather.status) ?
 						(
 							<>
 								<div className="grid-row">
 									<div>
-										<Switch id="id" checked={conditionDegrees} handleToggle={() => setConditionDegree(!conditionDegrees)}/>
+										<Switch
+											id='switcher'
+											checked={conditionDegrees}
+											handleToggle={() => setConditionDegree(!conditionDegrees)}
+										/>
 										{'  '}
 										<span>{!conditionDegrees ? 'Celsius' : 'Fahrenheit'}</span>
 									</div>
@@ -163,10 +169,11 @@ const App = () => {
 											tempData={dateArray}
 											dailyIcon={dailyIconArray}
 											dailyIconDesc={dailyIconDes}
-											celcius={conditionDegrees}
+											celsius={conditionDegrees}
 											hourly={hourlyArray}
 											tempCel={tempArrayCelcius}
 											tempFar={tempArrayFare}
+											size={'md'}
 											isDay={dayTheme}
 										/>
 									</div>
@@ -177,19 +184,19 @@ const App = () => {
 											currentTempCelci={currentTempCelci}
 											currentTempFa={currentTempFa}
 											currentDate={currentDate}
-											celcius={conditionDegrees}
+											celsius={conditionDegrees}
 											isDay={dayTheme}
 										/>
 									</div>
 								</div>
-								{currentTempCelci < 15 && (
+								{currentTempCelci < over15 && (
 									<Alert
 										message="Its below 15"
 										type="warning"
 									/>
 								)
 								}
-								{currentTempCelci > 25 && (
+								{currentTempCelci > over25 && (
 									<Alert
 										message="its over 25 C"
 										type="warning"
@@ -204,7 +211,11 @@ const App = () => {
 								<div>
 									<div className="sniper_bt">
 										<button className="button" type="button" onClick={retry}>
-											<span className="spinner-border spinner-border-sm" role="status" aria-hidden="true" />
+											<span
+												className="spinner-border spinner-border-sm"
+												role="status"
+												aria-hidden="true"
+											/>
 											Retry Now {backoffsecond}{backoffsecond !== 0 ? 's' : ''}
 										</button>
 									</div>

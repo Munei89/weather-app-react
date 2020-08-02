@@ -1,5 +1,6 @@
 import React from 'react';
 import styles from './City.module.scss'
+import PropTypes from 'prop-types'
 
 const City = ({
 	  currentWeatherIcon,
@@ -7,34 +8,37 @@ const City = ({
 	  currentTempCelci,
 	  currentTempFa,
 	  currentDate,
-	  isDay,
-	  celcius }) => {
+	  celsius }) => {
 	return (
 		<>
 			<div className={`card ${styles['current-condition']}`}>
 				<div className="present-left">
+					<div className="row diff-item">
+						<span className="date-f">{currentDate}</span>
+					</div>
 					<div className="vl">
 						<img className="big-snow responsive" alt="icon" src={currentWeatherIcon} />
 					</div>
 					<div>
 						<span className="big-season">{weatherDescription}</span>
 					</div>
-				</div>
-
-				<div className="present-right">
 					<div className="center-temper">
-						<span className="temperature">{!celcius ? currentTempCelci : currentTempFa}</span>
+						<span className="temperature">{!celsius ? currentTempCelci : currentTempFa}</span>
+						<span>{!celsius ? '°C' : '°F'}</span>
 					</div>
-					<div className="temper-switch">
-						<span>{!celcius ? '°C' : '°F'}&nbsp;</span>&nbsp;
-					</div>
-				</div>
-				<div className="row diff-item">
-					<span className="date-f">{currentDate}</span>
 				</div>
 			</div>
 		</>
 	)
 }
 
+
+City.propTypes = {
+	currentWeatherIcon: PropTypes.string.isRequired,
+	weatherDescription: PropTypes.string.isRequired,
+	currentTempCelci: PropTypes.string.isRequired,
+	currentTempFa: PropTypes.string.isRequired,
+	currentDate: PropTypes.string.isRequired,
+	celsius: PropTypes.bool.isRequired
+}
 export default City

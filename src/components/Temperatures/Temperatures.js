@@ -3,14 +3,13 @@ import styles from './Tempratures.module.scss'
 import cx from 'classnames'
 import PropTypes from 'prop-types'
 
-
 const Temperatures = ({
 	 tempData,
 	 dailyIcon,
 	 dailyIconDesc,
 	 tempCel,
 	 tempFar,
-	 celcius,
+	 celsius,
 	 hourly,
 	 size,
 	isDay,
@@ -20,7 +19,7 @@ const Temperatures = ({
 	})
 	return (
 		<>
-			<div className={`${styles['list-group']} card ${!isDay ? 'card--darkMode' : ''}`}>
+			<div className={`${styles['list-group']} card`}>
 				{tempData.map((value, index) => {
 					return (
 					    <div key={index} className={styles['list-group-item']}>
@@ -32,7 +31,7 @@ const Temperatures = ({
 								<div>
 									<div className={classProps}>{value}{' '}{hourly[index]}</div>
 
-									<div className={classProps}>{!celcius ? tempCel[index] : tempFar[index]}°</div>
+									<div className={classProps}>{!celsius ? tempCel[index] : tempFar[index]}°</div>
 								</div>
 							</div>
 						</div>)
@@ -46,8 +45,15 @@ Temperatures.defaultProps = {
 	classNames: null
 }
 Temperatures.propTypes = {
-	children: PropTypes.node.isRequired,
 	size: PropTypes.oneOf(['sm', 'md', 'lg', 'xl']),
-	className: PropTypes.string
+	className: PropTypes.string,
+	tempData: PropTypes.array.isRequired,
+	dailyIcon: PropTypes.array.isRequired,
+	dailyIconDesc: PropTypes.array.isRequired,
+	tempCel: PropTypes.array.isRequired,
+	tempFar: PropTypes.array.isRequired,
+	celsius: PropTypes.bool.isRequired,
+	hourly: PropTypes.array.isRequired,
+	isDay: PropTypes.bool.isRequired
 }
 export default Temperatures
