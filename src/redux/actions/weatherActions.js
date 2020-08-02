@@ -3,7 +3,6 @@ const getWeather = () => {
 		type: 'GET_WEATHER'
 	}
 }
-
 const setCelci = (tempObj) => {
 	return {
 		type: 'SET_CELCI',

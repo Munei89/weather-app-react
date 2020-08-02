@@ -1,3 +1,5 @@
+@import "../variables";
+
 .grid-wrapper {
   position: relative;
 }
@@ -12,13 +14,11 @@
   @include nested-row();
 
   > .col {
-    @include cell($cells: 3);
-    background: green;
+    @include cell($cells: 1);
   }
 
   &.type1 {
     > .col {
-      background: darken(green, 5%);
 
       &:first-child {
         @include cell($cells: 3, $span: 2);
@@ -28,14 +28,12 @@
 
   &.type2 {
     > .col {
-      background: darken(green, 10%);
       @include cell($cells: 6);
     }
   }
   &.type3 {
     > .col {
       @include cell($cells: 6);
-      background: darken(green, 15%);
 
       &:first-child {
         @include cell($cells: 6, $span: 3);

@@ -1,0 +1,25 @@
+$lightGrey: #F2F2F2;
+$grey: #6E6E6E;
+$white: #FFFFFF;
+$blue: #1849AB;
+
+$small_desktop: 1450px;
+$tablet: 769px;
+$mobile: 680px;
+$small_mobile: 410px;
+$desktop: 770px;
+
+$global-gutter: 10px;
+
+$font-roboto: 'Roboto', sans-serif !important;
+
+
+$font-sizes: (
+        'xxs': 8px,
+        'xs': 10px,
+        'sm': 12px,
+        'md': 14px,
+        'lg': 16px,
+        'xl': 21px,
+);
+$box-shadow-with-two-pixels: 0px 2px 2px rgba(0, 0, 0, 0.06), 0px 0px 2px rgba(0, 0, 0, 0.12);

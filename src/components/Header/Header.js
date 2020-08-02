@@ -1,31 +1,30 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import Logo from '../../assets/images/logo.png'
+import styles from './Header.module.scss'
 
 
-const Header = ({ currentTemp = 20 }) => {
+const Header = ({ currentTemp }) => {
 	return (
-		<div className="grid-container">
-			<div className='grid-row'>
-				<div className="col" >
-					{/*<a href="https://twitter.com/BreakingWeather" rel="noopener noreferrer" target="_blank"><img alt="icon" className="twitter" src="./twitter.svg" /></a>*/}
-					{/*<a href="https://instagram.com" rel="noopener noreferrer" target="_blank"><img alt="icon" className="instagram" src="./instagram.svg" /></a>*/}
-				</div>
-				<div className="col">
-					<h1>WHETHER FORECAST</h1>
-				</div>
-				<div className="col" >
-					{currentTemp < 15 ?
-						'Below 15 C' :
-						'Over 25 C'
-					}
-				</div>
+		<div className={styles['header']}>
+			<div className={styles['header-logo']}>
+				<img src={Logo} className={styles['logo']}/>
+			</div>
+			<div className={styles['header-text']}>
+				<h3>WHETHER FORECAST APP</h3>
+			</div>
+			<div className={styles['header-temp']}>
+				{currentTemp < 15 ?
+					'Below 15 C' :
+					'Over 25 C'
+				}
 			</div>
 		</div>
 	)
 }
 
 Header.propTypes = {
-	currentTemp: PropTypes.isRequired
+	currentTemp: PropTypes.string.isRequired
 }
 
 export default Header

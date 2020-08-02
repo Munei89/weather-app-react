@@ -1,4 +1,4 @@
-$global-gutter: 20px;
+@import '../variables.scss';
 
 @mixin cell($cells, $gutter: $global-gutter, $span: 1) {
   flex: 0 0 0px;
@@ -18,5 +18,41 @@ $global-gutter: 20px;
   flex-direction: row;
   width: 100%;
   margin: 0 (-$gutter / 2);
+}
+
+@mixin small_desktop {
+  @media (max-width: #{$small_desktop}) {
+    @content;
+  }
+}
+
+@mixin tablet {
+  @media (max-width: #{$tablet}) {
+    @content;
+  }
+}
+
+@mixin mobile {
+  @media (max-width: #{$mobile}) {
+    @content;
+  }
+}
+
+@mixin small_mobile {
+  @media (max-width: #{$small_mobile}) {
+    @content;
+  }
+}
+
+@mixin above_mobile {
+  @media (min-width: #{$mobile}) {
+    @content;
+  }
+}
+
+@mixin above_table {
+  @media (min-width: #{$desktop}) {
+    @content;
+  }
 }
 
