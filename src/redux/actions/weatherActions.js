@@ -15,9 +15,16 @@ const incAttempt = (val) => {
 		payload: val
 	}
 }
+const errorWeather = (err) => {
+	return {
+		type: 'LOAD_ERROR',
+		payload: err
+	}
+}
 
 export default {
 	getWeather,
 	setCelci,
-	incAttempt
+	incAttempt,
+	errorWeather
 }

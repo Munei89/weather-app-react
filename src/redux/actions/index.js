@@ -1,5 +1,5 @@
 import weatherActions from './weatherActions'
 const allActions = {
-    weatherActions
+	weatherActions
 }
 export default allActions
