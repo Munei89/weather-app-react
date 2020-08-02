@@ -137,10 +137,8 @@ const App = () => {
 	useEffect(() => {
 		setDayTheme(isDayTime)
 		// eslint-disable-next-line
-		mainBackoff();
 		const interval = setInterval(() => {
 			// eslint-disable-next-line
-			mainBackoff();
 		}, twentyMins); //1200000
 		return () => clearInterval(interval);
 		// eslint-disable-next-line
