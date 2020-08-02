@@ -13,7 +13,12 @@ const getWeather = (state = {}, action, incval = 1) => {
 		}
 	case 'INC_ATTEMPT':
 		return incval + 1
-
+	case 'LOAD_ERROR':
+		return {
+			...state,
+			status: false,
+			load_error: action.payload
+		}
 	default:
 		return incval
 	}
