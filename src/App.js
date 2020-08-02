@@ -30,6 +30,7 @@ const App = () => {
 	const [dayTheme, setDayTheme] = useState(false)
 	const dispatch = useDispatch()
 	const [conditionDegrees, setConditionDegree] = useState(false)
+	const [refresWeather, setRefreshWeather] = useState(1)
 	const [mountedComponent] = useDarkMode();
 	const themeMode = dayTheme ? lightTheme : darkTheme;
 	const hours = new Date().getHours()
@@ -136,13 +137,14 @@ const App = () => {
 		}
 		mainBackoff()
 		// eslint-disable-next-line
-	}, [incAttemp, dispatch]);
+	}, [incAttemp, dispatch,refresWeather]);
 	useEffect(() => {
 		setDayTheme(isDayTime)
 		const interval = setInterval(() => {
+			setRefreshWeather(refresWeather + 1)
 		}, twentyMins); //1200000
 		return () => clearInterval(interval);
-	}, [isDayTime])
+	}, [isDayTime, refresWeather])
 
 	if (!mountedComponent) return <div/>
 	const retry = () => {
