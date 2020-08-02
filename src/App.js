@@ -64,6 +64,7 @@ const App = () => {
 				console.log(e)
 			})
 	}
+
 	async function mainBackoff() {
 		try {
 			const response = await backOff(() => fetchApi(),
@@ -71,7 +72,7 @@ const App = () => {
 				});
 			dispatch({ type: 'GET_WEATHER', payload: response });
 		} catch (e) {
-			 mainBackoff();
+			 await mainBackoff();
 			console.log('api connection error');
 		}
 	}
@@ -131,18 +132,24 @@ const App = () => {
 			k = k + 1;
 		});
 	}
+	useEffect(mainBackoff, [])
+
 	useEffect(() => {
 		setDayTheme(isDayTime)
+		// eslint-disable-next-line
+		mainBackoff();
 		const interval = setInterval(() => {
-			mainBackoff().then(r => r);
+			// eslint-disable-next-line
+			mainBackoff();
 		}, twentyMins); //1200000
 		return () => clearInterval(interval);
+		// eslint-disable-next-line
 	}, [isDayTime])
 
 	if (!mountedComponent) return <div/>
 	const retry = () => {
 		dispatch({ type: 'INC_ATTEMPT', payload: 1 });
-		mainBackoff();
+		mainBackoff().then(r => r);
 	}
 	return (
 		<ThemeProvider
