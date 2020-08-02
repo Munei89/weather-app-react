@@ -2,6 +2,10 @@
 
 .grid-wrapper {
   position: relative;
+  @include mobile() {
+    height: unset !important;
+    overflow: hidden;
+  }
 }
 
 .grid-container {
@@ -9,10 +13,18 @@
   margin-right: auto;
   margin-left: auto;
   padding-top: 10px;
+
+  @include mobile() {
+    text-align: center;
+  }
 }
 .grid-row {
   margin: 10px 0;
   @include nested-row();
+
+  @include mobile() {
+    display: block;
+  }
 
   > .col {
     @include cell($cells: 1);

@@ -7,7 +7,7 @@ const Header = () => {
 	return (
 		<div className={styles['header']}>
 			<div className={styles['header-logo']}>
-				<img src={Logo} className={styles['logo']}/>
+				<img src={Logo} className={styles['logo']} alt='logo'/>
 			</div>
 			<div className={styles['header-text']}>
 				<h3>WHETHER FORECAST APP </h3>

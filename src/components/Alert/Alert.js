@@ -1,5 +1,6 @@
 import React from 'react'
 import styles from './Alert.module.scss'
+import PropTypes from 'prop-types'
 import cx from 'classnames'
 
 const Alert = ({ message, type }) => {
@@ -10,4 +11,8 @@ const Alert = ({ message, type }) => {
 	)
 }
 
+Alert.propTypes = {
+	message: PropTypes.string.isRequired,
+	type: PropTypes.string.isRequired,
+}
 export default Alert
