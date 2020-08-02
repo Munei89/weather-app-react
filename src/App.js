@@ -22,6 +22,10 @@ const over25 = 25;
 const zero = 0;
 const oneThousand = 1000;
 
+const APP_API_URL = 'https://api.openweathermap.org/data/2.5'
+const APP_API_KEY = '5d2a8fa8f4d1086adc783976721c0423'
+const APP_ICON_URL = 'https://openweathermap.org/img/wn'
+
 const App = () => {
 	const getWeather = useSelector(state => state.getWeather);
 	const incAttemp = useSelector(state => state.getWeather);
@@ -52,10 +56,10 @@ const App = () => {
 	function fetchApi() {
 		setBackoffsecond(new Date().getSeconds());
 		return fetch(
-			`${process.env.REACT_APP_API_URL}
+			`${APP_API_URL}
 				/onecall?&lat=${LAT}
 				&lon=${LON}&include=hourly,daily&appid
-				=${process.env.REACT_APP_API_KEY}`
+				=${APP_API_KEY}`
 		).then(res => handleResponse(res))
 			.then((response) => {
 				return response
@@ -89,7 +93,7 @@ const App = () => {
 		currentTempFa = currentTempCelci * (9 / 5) + 32;
 		currentTempCelci = currentTempCelci.toFixed(zero);
 		currentTempFa = currentTempFa.toFixed(zero);
-		currentWeatherIcon = `${process.env.REACT_APP_ICON_URL}/
+		currentWeatherIcon = `${APP_ICON_URL}/
 								${getWeather.weatherData.current.weather[zero].icon}
 								@2x.png`;
 		currentWeatherDescription = getWeather.weatherData.current.weather[zero].main;
@@ -110,7 +114,7 @@ const App = () => {
 			let tempCelcius = tempKelvin - 273.15;
 			let tempFa = tempCelcius * (9 / 5) + 32;
 
-			dailyIconArray.push(`${process.env.REACT_APP_ICON_URL}/${element.weather[zero].icon}@2x.png`);
+			dailyIconArray.push(`${APP_ICON_URL}/${element.weather[zero].icon}@2x.png`);
 			dailyIconDes.push(element.weather[zero].main);
 
 			tempArrayCelcius.push(tempCelcius.toFixed(zero));
