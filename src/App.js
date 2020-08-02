@@ -3,7 +3,6 @@ import { ThemeProvider } from 'styled-components';
 import { GlobalStyles } from './components/globalStyles';
 import { lightTheme, darkTheme } from './components/Themes'
 import { useDarkMode } from './components/customHooks'
-import Toggle from './components/Toggle'
 import './styles.scss';
 import { useDispatch, useSelector } from 'react-redux';
 import { backOff } from 'exponential-backoff';
@@ -11,77 +10,85 @@ import Temperatures from './components/Temperatures/Temperatures';
 import City from './components/CIty/City';
 import Switch from './components/Switch';
 import Header from './components/Header';
+import DayImg from '../src/assets/images/day.png'
+import NightImg from '../src/assets/images/night.png'
+import Alert from './components/Alert';
+import styles from './App.module.scss'
 
-
-const API_ID = '5d2a8fa8f4d1086adc783976721c0423';
 const LON = '18.4232';
 const LAT = '-33.9258'
 
 const App = () => {
 	const getWeather = useSelector(state => state.getWeather);
-	const celcius = useSelector(state => state.getWeather.celci_flag)
-	const inc_attemp = useSelector(state => state.getWeather);
+	const incAttemp = useSelector(state => state.getWeather);
 	const [backoffsecond, setBackoffsecond] = useState(0);
 	const [dayTheme, setDayTheme] = useState(false)
 	const dispatch = useDispatch()
 	const [error, setError] = useState();
 	const [conditionDegrees, setConditionDegree] = useState(false)
-	const [theme, themeToggler, mountedComponent] = useDarkMode();
+	const [mountedComponent] = useDarkMode();
 	const themeMode = dayTheme ? lightTheme : darkTheme;
-
+	const bgStyle = {
+		backgroundImage: `url(${dayTheme ? DayImg : NightImg})`,
+		backgroundSize: 'cover',
+		height: '100vh',
+		backgroundPosition: 'center',
+	};
 	async function fetchApi() {
 		setBackoffsecond(new Date().getSeconds());
-		return fetch(`https://api.openweathermap.org/data/2.5/onecall?&lat=-33.9258&lon=18.4232&include=hourly,daily&appid=${API_ID}`)
+		return fetch(`${process.env.REACT_APP_API_URL}/onecall?&lat=${LAT}&lon=${LON}&include=hourly,daily&appid=${process.env.REACT_APP_API_KEY}`)
 			.then(response => {
 				return response.json()
 			})
 		try {
-			const response = await backOff(() => fetchApi(), { delayFirstAttempt: true, numOfAttempts: 11 - inc_attemp, timeMultiple: 3 });
-			// process response
+			const
+				response = await backOff(() => fetchApi(),
+					{ delayFirstAttempt: true, numOfAttempts: 11 - incAttemp, timeMultiple: 3
+					});
 			dispatch({ type: 'GET_WEATHER', payload: response });
 		} catch (e) {
-			main_backoff();
+			mainBackoff();
 			setError(true)
 		}
 	}
-	async function main_backoff() {
+	async function mainBackoff() {
 		try {
-			const response = await backOff(() => fetchApi(), { delayFirstAttempt: true, numOfAttempts: 11 - inc_attemp, timeMultiple: 3 });
-			// process response
+			const response = await backOff(() => fetchApi(),
+				{ delayFirstAttempt: true, numOfAttempts: 11 - incAttemp, timeMultiple: 3
+				});
 			console.log('api connection success===', response);
 			dispatch({ type: 'GET_WEATHER', payload: response });
 		} catch (e) {
-			// handle error
-			main_backoff();
+			await mainBackoff();
 			console.log('api connection error===');
 		}
 	}
 
 	let dateArray = [];
 	let hourlyArray = [];
-	let temp_array_celcius = [];
-	let temp_array_fare = [];
-	let daily_icon_array = [];
-	let daily_icon_des = [];
-	let current_temp_celci;
-	let current_temp_fa;
-	let current_date = '';
-	let current_weather_icon = 'http://openweathermap.org/img/wn/01d@2x.png';
-	let currentWeaterDescription = '';
+	let tempArrayCelcius = [];
+	let tempArrayFare = [];
+	let dailyIconArray = [];
+	let dailyIconDes = [];
+	let currentTempCelci;
+	let currentTempFa;
+	let currentDate = '';
+	let currentWeatherIcon = '';
+	let currentWeatherDescription = '';
 
 	if (getWeather.status) {
-		let current_dt = getWeather.weatherData.current.dt;
-		const current_milliseconds = current_dt * 1000 // 1575909015000
-		const current_dateObject = new Date(current_milliseconds)
+		let currentDt = getWeather.weatherData.current.dt;
+		const currentMilliseconds = currentDt * 1000 // 1575909015000
+		const currentDateObject = new Date(currentMilliseconds)
 		let options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-		current_date = current_dateObject.toLocaleString('en-ZA', options);
-		current_temp_celci = getWeather.weatherData.current.temp - 273.15;
-		current_temp_fa = current_temp_celci * (9 / 5) + 32;
-		current_temp_celci = current_temp_celci.toFixed(0);
-		current_temp_fa = current_temp_fa.toFixed(0);
+		currentDate = currentDateObject.toLocaleString('en-ZA', options);
+		currentTempCelci = getWeather.weatherData.current.temp - 273.15;
+		currentTempFa = currentTempCelci * (9 / 5) + 32;
+		currentTempCelci = currentTempCelci.toFixed(0);
+		currentTempFa = currentTempFa.toFixed(0);
 
-		current_weather_icon = 'http://openweathermap.org/img/wn/' + getWeather.weatherData.current.weather[0].icon + '@2x.png';
-		currentWeaterDescription = getWeather.weatherData.current.weather[0].main;
+		currentWeatherIcon = `${process.env.REACT_APP_ICON_URL}/${getWeather.weatherData.current.weather[0].icon}@2x.png`;
+		currentWeatherDescription = getWeather.weatherData.current.weather[0].main;
 
 		let daily_temp = getWeather.weatherData.daily;
 		let k = 0;
@@ -100,23 +107,27 @@ const App = () => {
 			let temp_celcius = temp_kelvin - 273.15;
 			let temp_fa = temp_celcius * (9 / 5) + 32;
 
-			daily_icon_array.push('http://openweathermap.org/img/wn/' + element.weather[0].icon + '@2x.png');
-			daily_icon_des.push(element.weather[0].main);
+			dailyIconArray.push(`${process.env.REACT_APP_ICON_URL}/${element.weather[0].icon}@2x.png`);
+			dailyIconDes.push(element.weather[0].main);
 
-			temp_array_celcius.push(temp_celcius.toFixed(0));
-			temp_array_fare.push(temp_fa.toFixed(0));
+			tempArrayCelcius.push(temp_celcius.toFixed(0));
+			tempArrayFare.push(temp_fa.toFixed(0));
 			dateArray.push(weekday.substring(0, 3));
-			hourlyArray.push(dateObject.toLocaleString('en-ZA', { hour: 'numeric' }) + ':' + ('0' + dateObject.toLocaleString('en-ZA', { minute: 'numeric' })).slice(-2));
+			hourlyArray.push(dateObject.toLocaleString('en-ZA', { hour: 'numeric' }) +
+				':'				+
+				('0' + dateObject.toLocaleString('en-ZA', { minute: 'numeric' }))
+					.slice(-2));
 			k = k + 1;
 		});
 	}
 	useEffect(() => {
-		main_backoff();
+		mainBackoff();
 		const hours = new Date().getHours()
 		const isDayTime = hours > 6 && hours < 20
 		setDayTheme(isDayTime)
+		console.log(process.env)
 		const interval = setInterval(() => { // the app will be updated periodically for every 20 minutes
-			main_backoff();
+			mainBackoff();
 			console.log('This will run every 20 mintues!');
 		}, 1200000); //1200000
 		return () => clearInterval(interval);
@@ -125,54 +136,78 @@ const App = () => {
 
 	const retry = () => {
 		dispatch({ type: 'INC_ATTEMPT', payload: 1 });
-		main_backoff()
+		mainBackoff()
 	}
 	return (
-		<ThemeProvider theme={themeMode}>
-			<div className="grid-wrapper">
+		<ThemeProvider
+			theme={themeMode}>
+			<div className="grid-wrapper" style={bgStyle}>
 				<GlobalStyles/>
-				<Switch id="id" checked={conditionDegrees} handleToggle={() => setConditionDegree(!conditionDegrees)}/>
 				<div className="grid-container">
 					{(getWeather.status && !error) ?
 						(
 							<>
 								<div className="grid-row">
-									<Header currentTemp={current_temp_celci} />
+									<div>
+										<Switch id="id" checked={conditionDegrees} handleToggle={() => setConditionDegree(!conditionDegrees)}/>
+										{'  '}
+										<span>{!conditionDegrees ? 'Celsius' : 'Fahrenheit'}</span>
+									</div>
+								</div>
+								<div className="grid-row">
+									<Header />
 								</div>
 								<div className='grid-row type3'>
 									<div className='col'>
 										<Temperatures
 											tempData={dateArray}
-											dailyIcon={daily_icon_array}
-											dailyIconDesc={daily_icon_des}
+											dailyIcon={dailyIconArray}
+											dailyIconDesc={dailyIconDes}
 											celcius={conditionDegrees}
 											hourly={hourlyArray}
-											tempCel={temp_array_celcius}
-											tempFar={temp_array_fare}
+											tempCel={tempArrayCelcius}
+											tempFar={tempArrayFare}
+											isDay={dayTheme}
 										/>
 									</div>
 									<div className='col'>
 										<City
-											currentWeatherIcon={current_weather_icon}
-											currentWeaterDescription={currentWeaterDescription}
-											currentTempCelci={current_temp_celci}
-											currentTempFa={current_temp_fa}
-											currentDate={current_date}
+											currentWeatherIcon={currentWeatherIcon}
+											weatherDescription={currentWeatherDescription}
+											currentTempCelci={currentTempCelci}
+											currentTempFa={currentTempFa}
+											currentDate={currentDate}
 											celcius={conditionDegrees}
-											timeZone={getWeather.weatherData.timezone}
+											isDay={dayTheme}
 										/>
 									</div>
 								</div>
+								{currentTempCelci < 15 && (
+									<Alert
+										message="Its below 15"
+										type="warning"
+									/>
+								)
+								}
+								{currentTempCelci > 25 && (
+									<Alert
+										message="its over 25 C"
+										type="warning"
+									/>
+								)
+								}
 							</>
 						) :
 
 						(
 							<div className='grid-row'>
-								<div className="sniper_bt">
-									<button className="btn btn-primary " type="button" onClick={retry}>
-										<span className="spinner-border spinner-border-sm" role="status" aria-hidden="true" />
-									Retry Now {backoffsecond}{backoffsecond !== 0 ? 's' : ''}
-									</button>
+								<div>
+									<div className="sniper_bt">
+										<button className="button" type="button" onClick={retry}>
+											<span className="spinner-border spinner-border-sm" role="status" aria-hidden="true" />
+											Retry Now {backoffsecond}{backoffsecond !== 0 ? 's' : ''}
+										</button>
+									</div>
 								</div>
 							</div>
 

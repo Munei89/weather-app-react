@@ -8,9 +8,10 @@
   max-width: 1140px;
   margin-right: auto;
   margin-left: auto;
+  padding-top: 10px;
 }
 .grid-row {
-  height: 100px;
+  margin: 10px 0;
   @include nested-row();
 
   > .col {
