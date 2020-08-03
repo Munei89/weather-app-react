@@ -141,7 +141,7 @@ const App = () => {
 		}
 		mainBackoff()
 		// eslint-disable-next-line
-	}, [incAttemp, dispatch,refresWeather]);
+	}, [refresWeather]);
 	useEffect(() => {
 		setDayTheme(isDayTime)
 		const interval = setInterval(() => {
